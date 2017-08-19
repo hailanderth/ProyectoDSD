@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using MD.GA.SERVICES;
 using MD.GA.GUI.Session;
 using System.Threading;
+using MD.GA.BE.Entidades;
 
 namespace MD.GA.GUI.GA
 {
@@ -18,6 +19,8 @@ namespace MD.GA.GUI.GA
 
         private String user;
         private String pass;
+        private Usuario usuario;
+
         public login()
         {
             InitializeComponent();
@@ -30,27 +33,56 @@ namespace MD.GA.GUI.GA
             pass = txtlogin2.Text;
         }
 
-        private async void iniciarSesion()
+        private void iniciarSesion()
         {
+
+            //Primero ejecutar esta sección
+            //una vez dentro del programa ir a mantenimientos y crear un usuario
+            //de preferencia poner una clave de solo texto
+            //luego descomentar la parte B y borrar la parte A
+            //probar con el usuario que crearon
+
             try
             {
-                using (IServiceAlmacen service = new ServiceAlmacen())
+                
+                //Parte A
+                usuario = new Usuario();
+
+                usuario.Usuario1 = "admin";
+                usuario.Password = "pass";
+
+                if(txtlogin1.Text == "admin" && txtlogin2.Text == "pass")
                 {
-                    capturarDatos();
-                    var response = await service.UsuarioValidarLoginAsync(user, pass);
-                    if (response.IsValid)
-                    {
-                        CurrentSession.Usuario = response.Value;
-                        this.Hide();
-                        GA.Menu_Principal menuprincipal = new Menu_Principal();
-                        menuprincipal.ShowDialog();
-                        this.Show();
-                    }
-                    else
-                    {
-                        MessageBox.Show(response.ErrorMensaje, "Aviso");
-                    }
+                    CurrentSession.Usuario = usuario;
+                    this.Hide();
+                    GA.Menu_Principal menuprincipal = new Menu_Principal();
+                    menuprincipal.ShowDialog();
+                    this.Show();
                 }
+
+                else
+                {
+                    MessageBox.Show("Error", "Aviso");
+                }
+
+                //Parte B
+                //using (IServiceAlmacen service = new ServiceAlmacen())
+                //{
+                //    capturarDatos();
+                //    var response = await service.UsuarioValidarLoginAsync(user, pass);
+                //    if (response.IsValid)
+                //    {
+                //        CurrentSession.Usuario = response.Value;
+                //        this.Hide();
+                //        GA.Menu_Principal menuprincipal = new Menu_Principal();
+                //        menuprincipal.ShowDialog();
+                //        this.Show();
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show(response.ErrorMensaje, "Aviso");
+                //    }
+                //}
             }
             catch (Exception ex)
             {
